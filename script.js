@@ -6,7 +6,7 @@ const deck = [
   'A♣', '2♣', '3♣', '4♣', '5♣', '6♣', '7♣', '8♣', '9♣', '10♣', 'J♣', 'Q♣', 'K♣'
 ];
 
-let selectedCard = null; // Variabile per tenere traccia della carta selezionata
+let selectedCard = []; // Variabile per tenere traccia delle carte selezionate
 
 function isValidSelection(selectedCards) {
   const values = selectedCards.map(card => card.slice(0, -1));
@@ -77,11 +77,14 @@ function displayCards(playerId, cards) {
 
 // Funzione per selezionare una carta
 function selectCard(cardDiv) {
-  if (selectedCard) {
-    selectedCard.classList.remove('selected'); // Rimuove la selezione dalla carta precedentemente selezionata
+  if (!isValidSelection(selectedCard)) {
+    selectedCard.forEach(card => {
+      card.classList.remove('selected'); // Rimuove la selezione da ogni carta
+    });
   }
-  selectedCard = cardDiv; // Imposta la nuova carta selezionata
-  selectedCard.classList.add('selected'); // Aggiunge classe per evidenziare la selezione
+  // Aggiungi la nuova carta all'array e evidenzialo
+  selectedCard.push(cardDiv); // Imposta la nuova carta selezionata
+  cardDiv.classList.add('selected'); // Aggiunge classe per evidenziare la selezione
 }
 
 // Funzione per visualizzare il mazzo coperto
@@ -94,27 +97,38 @@ function displayDeck(remainingDeck) {
 
 // Aggiungere l'evento per piazzare la carta quando si clicca sull'area di gioco
 document.getElementById('cardSlot').onclick = function() {
-  if (selectedCard) {
+  if (selectedCard.length > 0) {
     placeCard(selectedCard);
-    selectedCard = null; // Resetta la selezione dopo il piazzamento
+    selectedCard = []; // Resetta la selezione dopo il piazzamento
   }
 };
 
 // Funzione per piazzare la carta
-function placeCard(cardDiv) {
+function placeCard(selectedCards) {
   const cardSlot = document.getElementById('cardSlot');
   cardSlot.textContent = ''; // Pulisci il contenuto esistente
 
-  // Crea una nuova carta piazzata
-  const placedCardDiv = document.createElement('div');
-  placedCardDiv.classList.add('placed-card'); // Aggiunge classe per la carta piazzata
-  placedCardDiv.textContent = cardDiv.textContent; // Mostra la carta piazzata
+  // Controlla se ci sono carte selezionate
+  if (selectedCards.length === 0) {
+    console.log("Nessuna carta selezionata.");
+    return;
+  }
 
-  // Aggiungi la carta piazzata all'area di gioco
-  cardSlot.appendChild(placedCardDiv);
+  // Aggiungi ogni carta selezionata all'area di gioco
+  selectedCards.forEach(cardDiv => {
+    const placedCardDiv = document.createElement('div');
+    placedCardDiv.classList.add('placed-card'); // Aggiunge classe per la carta piazzata
+    placedCardDiv.textContent = cardDiv.textContent; // Mostra la carta piazzata
 
-  // Rimuovi la carta dall'area del giocatore
-  cardDiv.remove();
+    // Aggiungi la carta piazzata all'area di gioco
+    cardSlot.appendChild(placedCardDiv);
+
+    // Rimuovi la carta dall'area del giocatore
+    cardDiv.remove();
+  });
+
+  // Reset dell'array delle carte selezionate, se necessario
+  selectedCard = []; // Resetta l'array delle carte selezionate
 }
 
 // All'avvio della pagina, leggi il numero di giocatori e distribuisci automaticamente le carte
