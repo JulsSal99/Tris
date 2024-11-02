@@ -81,6 +81,7 @@ function selectCard(cardDiv) {
     selectedCard.forEach(card => {
       card.classList.remove('selected'); // Rimuove la selezione da ogni carta
     });
+    selectedCard = [];
   }
   // Aggiungi la nuova carta all'array e evidenzialo
   selectedCard.push(cardDiv); // Imposta la nuova carta selezionata
