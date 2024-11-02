@@ -137,19 +137,3 @@ window.onload = function() {
   const numPlayers = localStorage.getItem('numPlayers') || 3; // Imposta 3 giocatori di default se non viene trovato nulla
   dealCards(parseInt(numPlayers));
 };
-
-// Funzione per piazzare la carta
-function placeCard(cardDiv) {
-  const cardSlot = document.getElementById('cardSlot');
-  
-  // Crea una nuova carta piazzata
-  const placedCardDiv = document.createElement('div');
-  placedCardDiv.classList.add('placed-card'); // Aggiunge classe per la carta piazzata
-  placedCardDiv.textContent = cardDiv.textContent; // Mostra la carta piazzata
-
-  // Aggiungi la carta piazzata all'area di gioco
-  cardSlot.appendChild(placedCardDiv);
-
-  // Rimuovi la carta dall'area del giocatore
-  cardDiv.remove();
-}
