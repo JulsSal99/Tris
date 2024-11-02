@@ -8,6 +8,24 @@ const deck = [
 
 let selectedCard = null; // Variabile per tenere traccia della carta selezionata
 
+function isValidSelection(selectedCards) {
+  const values = selectedCards.map(card => card.slice(0, -1));
+  const suits = selectedCards.map(card => card.slice(-1));
+
+  // Controlla se ci sono valori duplicati di semi differenti
+  const hasDifferentSuits = values.some((value, index) => 
+    values.indexOf(value) !== index && suits[index] !== suits[values.indexOf(value)]
+  );
+
+  // Controlla se ci sono valori consecutivi di semi uguali
+  const sortedValues = [...new Set(values)].sort((a, b) => deck.indexOf(a + '♠') - deck.indexOf(b + '♠'));
+  const hasConsecutiveSameSuits = sortedValues.some((value, index) => 
+    index > 0 && deck.indexOf(value + suits[values.indexOf(value)]) === deck.indexOf(sortedValues[index - 1] + suits[values.indexOf(sortedValues[index - 1])]) + 1
+  );
+
+  return !(hasDifferentSuits || hasConsecutiveSameSuits); // Ritorna true se è valida
+}
+
 // Funzione per mischiare il mazzo
 function shuffleDeck(deck) {
   for (let i = deck.length - 1; i > 0; i--) {
