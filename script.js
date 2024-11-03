@@ -14,6 +14,7 @@ function isValidSelection(selectedCards) {
     return false;
   }
   if (selectedCards.length <= 1){
+    console.error('selectedCards ha meno di 2 elementi.');
     return true;
   }
   const values = selectedCards.map(card => card.slice(0, -1));
