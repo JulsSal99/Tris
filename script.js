@@ -9,7 +9,7 @@ const deck = [
 let selectedCard = []; // Variabile per tenere traccia delle carte selezionate
 
 function isValidSelection(selectedCards) {
-  if (!Array.isArray(selectedCards)) {
+  if (!Array.isArray(selectedCard)) {
     console.error('selectedCards deve essere un array.');
     return false;
   }
