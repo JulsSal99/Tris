@@ -19,7 +19,7 @@ function isValidSelection(selectedCards) {
     const values = selectedCards.map(card => card.slice(0, -1));
     console.error('Selected cards contain non-string elements');
   } else {
-    console.log("selectedCards: " + selectedCards.toString());
+    console.error("selectedCards: " + selectedCards.toString());
     const values = selectedCards.map(card => card.slice(0, -1));
     const suits = selectedCards.map(card => card.slice(-1));
   
