@@ -13,7 +13,7 @@ function isValidSelection(selectedCards) {
     console.error('selectedCards deve essere un array.');
     return false;
   } else if (selectedCards.length <= 1){
-    console.error('selectedCards ha meno di 2 elementi.');
+    console.log('selectedCards ha meno di 2 elementi.');
     return true;
   } else {
     const values = selectedCards.map(card => card.slice(0, -1));
