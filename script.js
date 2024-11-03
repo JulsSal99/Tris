@@ -15,7 +15,7 @@ function isValidSelection(selectedCards) {
   } else if (selectedCards.length <= 1){
     console.log('selectedCards ha meno di 2 elementi.');
     return true;
-  } else if !(selectedCards.every(card => typeof card === 'string')) {
+  } else if (!(selectedCards.every(card => typeof card === 'string'))) {
     const values = selectedCards.map(card => card.slice(0, -1));
     console.error('Selected cards contain non-string elements');
   } else {
