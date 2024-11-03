@@ -77,14 +77,14 @@ function displayCards(playerId, cards) {
 
 // Funzione per selezionare una carta
 function selectCard(cardDiv) {
-  if (!isValidSelection(selectedCard)) {
+  // Aggiungi la nuova carta all'array e evidenzialo
+  selectedCard.push(cardDiv); // Imposta la nuova carta selezionata
+  if (selectedCard.length > 1 && !isValidSelection(selectedCard)) {
     selectedCard.forEach(card => {
       card.classList.remove('selected'); // Rimuove la selezione da ogni carta
     });
     selectedCard = [];
   }
-  // Aggiungi la nuova carta all'array e evidenzialo
-  selectedCard.push(cardDiv); // Imposta la nuova carta selezionata
   cardDiv.classList.add('selected'); // Aggiunge classe per evidenziare la selezione
 }
 
