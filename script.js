@@ -9,6 +9,9 @@ const deck = [
 let selectedCard = []; // Variabile per tenere traccia delle carte selezionate
 
 function isValidSelection(selectedCards) {
+  if (selectedCard.length <= 1){
+    return true;
+  }
   const values = selectedCards.map(card => card.slice(0, -1));
   const suits = selectedCards.map(card => card.slice(-1));
 
@@ -79,7 +82,7 @@ function displayCards(playerId, cards) {
 function selectCard(cardDiv) {
   // Aggiungi la nuova carta all'array e evidenzialo
   selectedCard.push(cardDiv); // Imposta la nuova carta selezionata
-  if (selectedCard.length > 1 && !isValidSelection(selectedCard)) {
+  if (!isValidSelection(selectedCard)) {
     selectedCard.forEach(card => {
       card.classList.remove('selected'); // Rimuove la selezione da ogni carta
     });
