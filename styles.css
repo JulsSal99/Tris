@@ -71,9 +71,10 @@ button:hover {
   border: 2px solid #ccc;
   border-radius: 10px;
   padding: 20px;
-  width: 200px;
+  width: 80px;
   position: relative;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  cursor: pointer; /* Cambia il cursore quando si passa sopra */
 }
 
 /* Stile per le carte all'interno del mazzo */

@@ -83,6 +83,18 @@ function shuffleDeck(deck) {
   return deck;
 }
 
+/**
+ * Gestisce quando viene cliccato il mazzo coperto.
+ *
+ */
+function deckDeal() {
+  playerCards[`cards${playerturn}`].push(shuffledDeck.splice(0, 1)[0]);
+  console.log(playerCards[`cards${playerturn}`]);
+  displayDeck(shuffledDeck);
+  dealHands();
+  skipTurn();
+}
+
 // Funzione per distribuire le carte
 function dealCards(numPlayers) {
   shuffledDeck = shuffleDeck(deck.concat(deck));
