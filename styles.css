@@ -57,45 +57,59 @@ button:hover {
   cursor: pointer; /* Cambiato il cursore per indicare che la carta è cliccabile */
 }
 
-/* Stile per il mazzo coperto */
+/* Contenitore del mazzo di carte */
 .deck-container {
-  margin-top: 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center; /* Centra verticalmente gli elementi */
+  margin: 20px;
 }
 
+/* Stile per il mazzo di carte */
 .deck {
-  width: 100px;
-  height: 150px;
-  background-color: #4CAF50;
+  background-color: #f8f8f8;
+  border: 2px solid #ccc;
   border-radius: 10px;
-  border: 2px solid #333;
-  display: inline-block;
+  padding: 20px;
+  width: 200px;
+  position: relative;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-.deck:before {
-  content: "";
-  display: block;
-  width: 100%;
-  height: 100%;
-  background-color: #333;
-  border-radius: 10px;
-  position: relative;
-  top: -10px;
-  left: -5px;
-  z-index: -1;
+/* Stile per le carte all'interno del mazzo */
+.deck-cards {
+  display: flex; /* Usa flexbox */
+  justify-content: center; /* Centra orizzontalmente */
+  align-items: center; /* Centra verticalmente */
+  height: 100px; /* Imposta un'altezza fissa per centrare verticalmente */
+  width: 100%; /* Occupa tutta la larghezza */
+  border: 1px dashed #ccc; /* Facoltativo: stile per il contenitore delle carte */
 }
 
-/* .deck:after {
-  content: "";
-  display: block;
-  width: 100%;
-  height: 100%;
-  background-color: #666;
-  border-radius: 10px;
-  position: relative;
-  top: -20px;
-  left: -10px;
-  z-index: -2;
-}*/
+/* Stile per il numero di carte */
+.deck h3 {
+  text-align: center; /* Allinea il testo al centro */
+  font-size: 18px;
+  color: #333;
+  margin: 0; /* Rimuove il margine per centrare meglio */
+}
+
+
+/* Pulsante per passare il turno */
+.skipturn {
+  background-color: #007bff;
+  color: white;
+  padding: 15px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+  transition: background-color 0.3s ease;
+}
+
+.skipturn:hover {
+  background-color: #0056b3;
+}
 
 /* Stile per l'area di gioco */
 .play-area {

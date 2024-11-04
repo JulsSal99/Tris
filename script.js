@@ -6,6 +6,8 @@ const deck = [
   'A♣', '2♣', '3♣', '4♣', '5♣', '6♣', '7♣', '8♣', '9♣', '10♣', 'J♣', 'Q♣', 'K♣'
 ];
 
+let shuffledDeck = [];
+
 let selectedCard = []; // Variabile per tenere traccia delle carte selezionate
 
 function isValidSelection(selectedCards) {
@@ -15,26 +17,33 @@ function isValidSelection(selectedCards) {
   } else if (selectedCards.length <= 1){
     console.log('selectedCards ha meno di 2 elementi.');
     return true;
-  } else if (!(selectedCards.every(card => typeof card === 'string'))) {
-    const values = selectedCards.map(card => card.slice(0, -1));
-    console.error('Selected cards contain non-string elements');
   } else {
-    console.error("selectedCards: " + selectedCards.toString());
     const values = selectedCards.map(card => card.slice(0, -1));
     const suits = selectedCards.map(card => card.slice(-1));
+    console.log("values: " + values.toString());
+    console.log("suits: " + suits.toString());
   
     // Controlla se ci sono valori duplicati di semi differenti
-    const hasDifferentSuits = values.some((value, index) => 
-      values.indexOf(value) !== index && suits[index] !== suits[values.indexOf(value)]
-    );
-  
+    const allValuesEqual = values.every(value => value === values[0]);
+    if (allValuesEqual) {
+      console.log("Same value, different suits");
+      return true;
+    }
     // Controlla se ci sono valori consecutivi di semi uguali
+    // Controlla se tutti i semi sono uguali
+    const allSameSuits = suits.every(suit => suit === suits[0]);
+    // Ordina i valori e controlla se sono consecutivi
     const sortedValues = [...new Set(values)].sort((a, b) => deck.indexOf(a + '♠') - deck.indexOf(b + '♠'));
-    const hasConsecutiveSameSuits = sortedValues.some((value, index) => 
-      index > 0 && deck.indexOf(value + suits[values.indexOf(value)]) === deck.indexOf(sortedValues[index - 1] + suits[values.indexOf(sortedValues[index - 1])]) + 1
+
+    const hasConsecutiveValues = sortedValues.every((value, index) => 
+       index === 0 || deck.indexOf(value + suits[0]) === deck.indexOf(sortedValues[index - 1] + suits[0]) + 1
     );
-  
-    return !(hasDifferentSuits || hasConsecutiveSameSuits); // Ritorna true se è valida
+    console.log(sortedValues);
+
+    // Risultato finale
+    const hasConsecutiveSameSuits = allSameSuits && hasConsecutiveValues;
+    console.log(hasConsecutiveSameSuits);
+    return hasConsecutiveSameSuits;
   }
 }
 
@@ -49,7 +58,7 @@ function shuffleDeck(deck) {
 
 // Funzione per distribuire le carte
 function dealCards(numPlayers) {
-  let shuffledDeck = shuffleDeck([...deck]);
+  shuffledDeck = shuffleDeck([...deck]);
 
   const playersContainer = document.getElementById('playersContainer');
   playersContainer.innerHTML = ''; // Pulisce eventuali giocatori precedenti
@@ -89,23 +98,34 @@ function displayCards(playerId, cards) {
 
 // Funzione per selezionare una carta
 function selectCard(cardDiv) {
-  // Aggiungi la nuova carta all'array e evidenzialo
-  selectedCard.push(cardDiv); // Imposta la nuova carta selezionata
-  if (!isValidSelection(selectedCard)) {
-    selectedCard.forEach(card => {
-      card.classList.remove('selected'); // Rimuove la selezione da ogni carta
-    });
-    selectedCard = [];
+  // Controlla se la carta è già selezionata
+  const isAlreadySelected = selectedCard.includes(cardDiv);
+
+  if (isAlreadySelected) {
+    // Se la carta è già selezionata, rimuovila
+    selectedCard = selectedCard.filter(card => card !== cardDiv);
+    cardDiv.classList.remove('selected'); // Rimuovi la classe di selezione
+  } else {
+     // Aggiungi la nuova carta a un array temporaneo
+     let CardsValue = [];
+     Cardsvalue = Array.from(selectedCard).map(card => card.textContent);
+     Cardsvalue.push(cardDiv.textContent);
+     if (!isValidSelection(Cardsvalue)) {
+       selectedCard.forEach(card => {
+         card.classList.remove('selected'); // Rimuove la selezione da ogni carta
+       });
+       selectedCard = [];
+     }
+     selectedCard.push(cardDiv);
+     cardDiv.classList.add('selected'); // Aggiunge classe per evidenziare la selezione
   }
-  cardDiv.classList.add('selected'); // Aggiunge classe per evidenziare la selezione
 }
 
 // Funzione per visualizzare il mazzo coperto
 function displayDeck(remainingDeck) {
   const deckDiv = document.getElementById('deck');
-  deckDiv.innerHTML = ''; // Pulisce l'area del mazzo
   // Mantieni le carte rimanenti nel mazzo come coperto, senza mostrare il contenuto.
-  deckDiv.dataset.remaining = remainingDeck.length; // Memorizza il numero di carte rimanenti
+  document.getElementById('deck-count').innerText = `${remainingDeck.length}`;
 }
 
 // Aggiungere l'evento per piazzare la carta quando si clicca sull'area di gioco
