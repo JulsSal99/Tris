@@ -6,9 +6,36 @@ const deck = [
   'A♣', '2♣', '3♣', '4♣', '5♣', '6♣', '7♣', '8♣', '9♣', '10♣', 'J♣', 'Q♣', 'K♣'
 ];
 
+const numPlayers = localStorage.getItem('numPlayers') || 3; // Imposta 3 giocatori di default se non viene trovato nulla
+
 let shuffledDeck = [];
 
+let playerCards = {}; // Crea un oggetto per memorizzare le carte dei giocatori
+
 let selectedCard = []; // Variabile per tenere traccia delle carte selezionate
+
+let playerturn = 1;
+
+// Funzione da chiamare al click
+function skipTurn() {
+  // Qui, per esempio, passeremo al giocatore 1
+  if (playerturn < numPlayers){
+    playerturn += 1;
+  } else { playerturn = 1; } 
+  showplayer(playerturn);
+}
+
+function showplayer(player) {
+  console.log("Turno di " + player + ".")  
+  for (let i = 1; i <= numPlayers; i++) {
+    const playerDiv = document.getElementById(`player${i}-cards`);
+    if (i !== player) {
+      playerDiv.setAttribute('hidden', true);
+    } else {
+      playerDiv.removeAttribute('hidden');
+    }
+  }
+}
 
 function isValidSelection(selectedCards) {
   if (!Array.isArray(selectedCards)) {
@@ -58,7 +85,7 @@ function shuffleDeck(deck) {
 
 // Funzione per distribuire le carte
 function dealCards(numPlayers) {
-  shuffledDeck = shuffleDeck([...deck]);
+  shuffledDeck = shuffleDeck(deck.concat(deck));
 
   const playersContainer = document.getElementById('playersContainer');
   playersContainer.innerHTML = ''; // Pulisce eventuali giocatori precedenti
@@ -69,9 +96,9 @@ function dealCards(numPlayers) {
     playerDiv.classList.add('player');
     playerDiv.innerHTML = `<h2>Giocatore ${i}</h2><div class="cards" id="player${i}-cards"></div>`;
     playersContainer.appendChild(playerDiv);
-
-    const playerCards = shuffledDeck.splice(0, 5); // Distribuisci 5 carte a ciascun giocatore
-    displayCards(`player${i}-cards`, playerCards);
+    
+    // Distribuisci 5 carte a ciascun giocatore
+    playerCards[`cards${i}`] = shuffledDeck.splice(0, 5); 
   }
 
   // Mostra il mazzo coperto con le carte rimanenti
@@ -79,21 +106,25 @@ function dealCards(numPlayers) {
 }
 
 // Funzione per visualizzare le carte sullo schermo
-function displayCards(playerId, cards) {
-  const playerDiv = document.getElementById(playerId);
-  playerDiv.innerHTML = ''; // Pulisce l'area delle carte
-  cards.forEach(card => {
-    const cardDiv = document.createElement('div');
-    cardDiv.classList.add('card');
-    cardDiv.textContent = card;
+function dealHands() {
+  for (let i = 1; i <= numPlayers; i++) {
+    const playerDiv = document.getElementById(`player${i}-cards`);
+    playerDiv.setAttribute('hidden', true);
+    playerDiv.innerHTML = ''; // Pulisce l'area delle carte
+    playerCards[`cards${i}`].forEach(card => {
+      const cardDiv = document.createElement('div');
+      cardDiv.classList.add('card');
+      cardDiv.textContent = card;
 
-    // Aggiunge l'evento di click per selezionare la carta
-    cardDiv.onclick = function() {
-      selectCard(cardDiv);
-    };
+      // Aggiunge l'evento di click per selezionare la carta
+      cardDiv.onclick = function() {
+        selectCard(cardDiv);
+      };
 
-    playerDiv.appendChild(cardDiv);
-  });
+      playerDiv.appendChild(cardDiv);
+    });
+    console.log(`Creato giocatore ${i}`);
+  }
 }
 
 // Funzione per selezionare una carta
@@ -166,6 +197,7 @@ function placeCard(selectedCards) {
 
 // All'avvio della pagina, leggi il numero di giocatori e distribuisci automaticamente le carte
 window.onload = function() {
-  const numPlayers = localStorage.getItem('numPlayers') || 3; // Imposta 3 giocatori di default se non viene trovato nulla
   dealCards(parseInt(numPlayers));
+  dealHands();
+  showplayer(playerturn)
 };
