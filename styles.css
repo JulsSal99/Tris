@@ -5,7 +5,9 @@ body {
   background-color: #f4f4f4;
 }
 
-
+.hidden {
+  display: none;
+}
 
 
 h1, h2 {
@@ -37,24 +39,73 @@ button:hover {
   padding: 20px;
   background-color: white;
   width: 25%;
+  transition: all 0.5s ease; /* Aggiunge una transizione fluida */
+}
+
+.player:has(.cards.hidden) {
+  font-size: 8px; /* Dimensione del font più piccola */
+  /* Puoi aggiungere altre proprietà per ridurre la dimensione */
+  height: 30px; /* Esempio di altezza */
+  width: 100px;
+  opacity: 0.5; /* Esempio di riduzione dell'opacità */
+  transition: all 0.5s ease; /* Aggiunge una transizione fluida */
 }
 
 .cards {
   margin-top: 10px;
   padding: 10px;
   border: 1px solid #ccc;
-  min-height: 100px;
+  container-type: inline-size; /* Questa proprietà abilita le container queries */
 }
 
 .card {
-  display: inline-block;
+  display: inline-flex;
   padding: 10px;
   margin: 5px;
+  width: 30px;
+  height: 45px;
   border-radius: 5px;
   background-color: #e7e7e7;
   border: 1px solid #ccc;
   font-size: 18px;
+  align-items: center;
+  justify-content: center;
   cursor: pointer; /* Cambiato il cursore per indicare che la carta è cliccabile */
+  transition: all 0.5s ease; /* Aggiunge una transizione fluida */
+}
+
+.cards.hidden .card {
+  font-size: 1px; /* Dimensione del font più piccola */
+  transition: all 0.5s ease; /* Aggiunge una transizione fluida */
+}
+
+/* Container Query: applicato quando .cards ha una larghezza inferiore a 150px */
+@container (max-width: 140px) {
+  .card {
+    width: 20px;  /* Riduci la larghezza delle carte */
+    height: 30px; /* Riduci l'altezza delle carte */
+    font-size: 15px; /* Riduci la dimensione del font */
+    padding: 3px;
+    margin: 1px;
+  }
+}
+@container (min-width: 140px) and (max-width: 160px) {
+  .card {
+    width: 25px;  /* Riduci la larghezza delle carte */
+    height: 40px; /* Riduci l'altezza delle carte */
+    font-size: 17px; /* Riduci la dimensione del font */
+    padding: 5px;
+    margin: 3px;
+  }
+}
+@container (min-width: 160px) and (max-width: 180px) {
+  .card {
+    width: 27px;  /* Riduci la larghezza delle carte */
+    height: 42px; /* Riduci l'altezza delle carte */
+    font-size: 17px; /* Riduci la dimensione del font */
+    padding: 7px;
+    margin: 4px;
+  }
 }
 
 /* Contenitore del mazzo di carte */

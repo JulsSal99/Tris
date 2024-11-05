@@ -16,7 +16,10 @@ let selectedCard = []; // Variabile per tenere traccia delle carte selezionate
 
 let playerturn = 1;
 
-// Funzione da chiamare al click
+
+/**
+ * Funzione che passa il turno al prossimo giocatore
+ */
 function skipTurn() {
   // Qui, per esempio, passeremo al giocatore 1
   if (playerturn < numPlayers){
@@ -30,9 +33,9 @@ function showplayer(player) {
   for (let i = 1; i <= numPlayers; i++) {
     const playerDiv = document.getElementById(`player${i}-cards`);
     if (i !== player) {
-      playerDiv.setAttribute('hidden', true);
+      playerDiv.classList.add('hidden') // Nasconde l'elemento
     } else {
-      playerDiv.removeAttribute('hidden');
+      playerDiv.classList.remove('hidden'); // Mostra l'elemento
     }
   }
 }
@@ -74,7 +77,9 @@ function isValidSelection(selectedCards) {
   }
 }
 
-// Funzione per mischiare il mazzo
+/**
+ * Funzione per mischiare il mazzo
+ */
 function shuffleDeck(deck) {
   for (let i = deck.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -88,14 +93,19 @@ function shuffleDeck(deck) {
  *
  */
 function deckDeal() {
-  playerCards[`cards${playerturn}`].push(shuffledDeck.splice(0, 1)[0]);
-  console.log(playerCards[`cards${playerturn}`]);
-  displayDeck(shuffledDeck);
-  dealHands();
-  skipTurn();
+  const arrayLength = shuffledDeck.length;
+  if (arrayLength >= 0 ){
+    playerCards[`cards${playerturn}`].push(shuffledDeck.splice(0, 1)[0]);
+    console.log(playerCards[`cards${playerturn}`]);
+    displayDeck(shuffledDeck);
+    dealHands();
+    skipTurn();
+  }
 }
 
-// Funzione per distribuire le carte
+/**
+ *  Funzione per distribuire le carte
+ */
 function dealCards(numPlayers) {
   shuffledDeck = shuffleDeck(deck.concat(deck));
 
@@ -117,11 +127,14 @@ function dealCards(numPlayers) {
   displayDeck(shuffledDeck);
 }
 
-// Funzione per visualizzare le carte sullo schermo
+/**
+ * Funzione per creare le carte del giocatore
+ */
 function dealHands() {
   for (let i = 1; i <= numPlayers; i++) {
     const playerDiv = document.getElementById(`player${i}-cards`);
-    playerDiv.setAttribute('hidden', true);
+    //playerDiv.setAttribute('hidden', true);
+    playerDiv.classList.add('hidden') // Nasconde l'elemento
     playerDiv.innerHTML = ''; // Pulisce l'area delle carte
     playerCards[`cards${i}`].forEach(card => {
       const cardDiv = document.createElement('div');
@@ -139,7 +152,9 @@ function dealHands() {
   }
 }
 
-// Funzione per selezionare una carta
+/**
+ * Funzione per selezionare una carta
+ */
 function selectCard(cardDiv) {
   // Controlla se la carta è già selezionata
   const isAlreadySelected = selectedCard.includes(cardDiv);
@@ -164,11 +179,22 @@ function selectCard(cardDiv) {
   }
 }
 
-// Funzione per visualizzare il mazzo coperto
+/**
+ * Funzione per visualizzare il mazzo coperto
+ * gestisce l'onclick e il cursore
+ * function(remainingDeck, arrayLength)
+ */
 function displayDeck(remainingDeck) {
   const deckDiv = document.getElementById('deck');
+  const arrayLength = remainingDeck.length;
   // Mantieni le carte rimanenti nel mazzo come coperto, senza mostrare il contenuto.
-  document.getElementById('deck-count').innerText = `${remainingDeck.length}`;
+  if (arrayLength == 0){
+    document.getElementById('deck-count').innerText = ``;
+    deckDiv.removeAttribute("onclick");
+    deckDiv.style.cursor = "default"; // Cambia il cursore a default, puoi usare anche "auto" o un altro valore
+  } else {
+    document.getElementById('deck-count').innerText = `${arrayLength}`;
+  }
 }
 
 // Aggiungere l'evento per piazzare la carta quando si clicca sull'area di gioco
@@ -179,7 +205,9 @@ document.getElementById('cardSlot').onclick = function() {
   }
 };
 
-// Funzione per piazzare la carta
+/**
+ * Funzione per piazzare la carta
+ */
 function placeCard(selectedCards) {
   const cardSlot = document.getElementById('cardSlot');
   cardSlot.textContent = ''; // Pulisci il contenuto esistente
@@ -207,7 +235,9 @@ function placeCard(selectedCards) {
   selectedCard = []; // Resetta l'array delle carte selezionate
 }
 
-// All'avvio della pagina, leggi il numero di giocatori e distribuisci automaticamente le carte
+/**
+ * All'avvio della pagina, leggi il numero di giocatori e distribuisci automaticamente le carte
+ */
 window.onload = function() {
   dealCards(parseInt(numPlayers));
   dealHands();
