@@ -24,7 +24,8 @@ function skipTurn() {
   // Qui, per esempio, passeremo al giocatore 1
   if (playerturn < numPlayers){
     playerturn += 1;
-  } else { playerturn = 1; } 
+  } else { playerturn = 1; }
+  selectedCard = []; 
   showplayer(playerturn);
 }
 
@@ -40,6 +41,13 @@ function showplayer(player) {
   }
 }
 
+/**
+ * Controlla se è un array con almeno 2 elementi
+ * Controlla se ci sono valori duplicati di semi differenti
+ * Controlla se ci sono valori consecutivi di semi uguali
+ * @param {*} selectedCards 
+ * @returns 
+ */
 function isValidSelection(selectedCards) {
   if (!Array.isArray(selectedCards)) {
     console.error('selectedCards deve essere un array.');
@@ -50,8 +58,6 @@ function isValidSelection(selectedCards) {
   } else {
     const values = selectedCards.map(card => card.slice(0, -1));
     const suits = selectedCards.map(card => card.slice(-1));
-    console.log("values: " + values.toString());
-    console.log("suits: " + suits.toString());
   
     // Controlla se ci sono valori duplicati di semi differenti
     const allValuesEqual = values.every(value => value === values[0]);
@@ -68,12 +74,12 @@ function isValidSelection(selectedCards) {
     const hasConsecutiveValues = sortedValues.every((value, index) => 
        index === 0 || deck.indexOf(value + suits[0]) === deck.indexOf(sortedValues[index - 1] + suits[0]) + 1
     );
-    console.log(sortedValues);
-
-    // Risultato finale
-    const hasConsecutiveSameSuits = allSameSuits && hasConsecutiveValues;
-    console.log(hasConsecutiveSameSuits);
-    return hasConsecutiveSameSuits;
+    if (allSameSuits && hasConsecutiveValues) {
+      console.log("Consecutive numbers, same suits");
+      return true;
+    } else {
+      return false;
+    }
   }
 }
 
