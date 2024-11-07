@@ -5,17 +5,17 @@ const deck = [
   'A♦', '2♦', '3♦', '4♦', '5♦', '6♦', '7♦', '8♦', '9♦', '10♦', 'J♦', 'Q♦', 'K♦',
   'A♣', '2♣', '3♣', '4♣', '5♣', '6♣', '7♣', '8♣', '9♣', '10♣', 'J♣', 'Q♣', 'K♣'
 ];
+// nel caso di 104 carte, metti un numero dopo la carta per capire se è la prima o secona
 
-const numPlayers = localStorage.getItem('numPlayers') || 3; // Imposta 3 giocatori di default se non viene trovato nulla
+const numPlayers = localStorage.getItem('numPlayers') || 3;
 
 let shuffledDeck = [];
 
-let playerCards = {}; // Crea un oggetto per memorizzare le carte dei giocatori
+let playerCards = {}; // per memorizzare le carte dei giocatori
 
 let selectedCard = []; // Variabile per tenere traccia delle carte selezionate
 
 let playerturn = 1;
-
 
 /**
  * Funzione che passa il turno al prossimo giocatore
@@ -25,11 +25,27 @@ function skipTurn() {
   if (playerturn < numPlayers){
     playerturn += 1;
   } else { playerturn = 1; }
-  selectedCard = []; 
   showplayer(playerturn);
+  dragHandler();
 }
 
+/**
+ * Deseleziona qualunque card 
+ */
+function deselectAllCards() {
+  const cards = document.querySelectorAll('.card');
+  cards.forEach(card => {
+    card.classList.remove('selected');
+  });
+}
+
+
+/**
+ * Funzione che mostra solo un giocatore
+ */
 function showplayer(player) {
+  deselectAllCards();
+  selectedCard = []; 
   console.log("Turno di " + player + ".")  
   for (let i = 1; i <= numPlayers; i++) {
     const playerDiv = document.getElementById(`player${i}-cards`);
@@ -95,22 +111,7 @@ function shuffleDeck(deck) {
 }
 
 /**
- * Gestisce quando viene cliccato il mazzo coperto.
- *
- */
-function deckDeal() {
-  const arrayLength = shuffledDeck.length;
-  if (arrayLength >= 0 ){
-    playerCards[`cards${playerturn}`].push(shuffledDeck.splice(0, 1)[0]);
-    console.log(playerCards[`cards${playerturn}`]);
-    displayDeck(shuffledDeck);
-    dealHands();
-    skipTurn();
-  }
-}
-
-/**
- *  Funzione per distribuire le carte
+ *  Funzione per distribuire le carte solo all'inizio della partita
  */
 function dealCards(numPlayers) {
   shuffledDeck = shuffleDeck(deck.concat(deck));
@@ -164,7 +165,6 @@ function dealHands() {
 function selectCard(cardDiv) {
   // Controlla se la carta è già selezionata
   const isAlreadySelected = selectedCard.includes(cardDiv);
-
   if (isAlreadySelected) {
     // Se la carta è già selezionata, rimuovila
     selectedCard = selectedCard.filter(card => card !== cardDiv);
@@ -172,9 +172,9 @@ function selectCard(cardDiv) {
   } else {
      // Aggiungi la nuova carta a un array temporaneo
      let CardsValue = [];
-     Cardsvalue = Array.from(selectedCard).map(card => card.textContent);
-     Cardsvalue.push(cardDiv.textContent);
-     if (!isValidSelection(Cardsvalue)) {
+     CardsValue = Array.from(selectedCard).map(card => card.textContent);
+     CardsValue.push(cardDiv.textContent);
+     if (!isValidSelection(CardsValue)) {
        selectedCard.forEach(card => {
          card.classList.remove('selected'); // Rimuove la selezione da ogni carta
        });
@@ -212,6 +212,21 @@ document.getElementById('cardSlot').onclick = function() {
 };
 
 /**
+ * Gestisce quando viene cliccato il mazzo coperto.
+ *
+ */
+function deckDeal() {
+  const arrayLength = shuffledDeck.length;
+  if (arrayLength >= 0 ){
+    playerCards[`cards${playerturn}`].push(shuffledDeck.splice(0, 1)[0]);
+    console.log(playerCards[`cards${playerturn}`]);
+    displayDeck(shuffledDeck);
+    dealHands();
+    skipTurn();
+  }
+}
+
+/**
  * Funzione per piazzare la carta
  */
 function placeCard(selectedCards) {
@@ -242,10 +257,116 @@ function placeCard(selectedCards) {
 }
 
 /**
+ * Funzione che crea i marker su una cards.
+ */ 
+function crtMarker(player) {
+  const cardsContainer = document.getElementById(`player${player}-cards`);
+  if (cardsContainer) {
+    const cards = Array.from(cardsContainer.querySelectorAll('.card'));
+    cards.forEach((card, index) => {
+      if (index < cards.length - 1) {
+        const marker = document.createElement('span');
+        marker.classList.add('marker');
+        marker.textContent = '|';
+        card.parentNode.insertBefore(marker, card.nextSibling);
+      }
+    });
+  }
+}
+
+
+/**
+ * Funzione che rimuove i marker da un cards.
+ */ 
+function rmMarker(player) {
+  const playerCardsContainer = document.getElementById(`player${player}-cards`);
+
+  if (playerCardsContainer) {
+    // Troviamo tutti i marker dentro il contenitore del player
+    const markers = playerCardsContainer.querySelectorAll('.marker');
+
+    // Rimuoviamo ogni marker trovato
+    markers.forEach(marker => {
+      marker.remove();
+    });
+  };
+}
+/**
+ * Crea i marker per tutti i giocatori.
+ */
+function handleMarkers() {
+  for (let player = 1; player <= numPlayers; player++) {
+    if (player !== playerturn){
+      rmMarker(player);
+    } else {
+      crtMarker(player);
+    }
+  }
+};
+
+function dragHandler(){
+  const cards = document.querySelectorAll('.card');
+  //const markers = document.querySelectorAll('.marker');
+  handleMarkers();
+  for (let i = 1; i <= numPlayers; i++) {
+    const playercards = document.getElementById(`player${i}-cards`);
+    const markers = playercards.querySelectorAll('.marker');
+    enableDraggableCards(cards, markers);
+  }
+}
+
+function enableDraggableCards(cards, markers) {
+  cards.forEach(card => {
+    card.setAttribute('draggable', 'true');
+    
+    card.addEventListener('dragstart', (event) => {
+      event.target.classList.add('dragging');
+      markers.forEach(marker => marker.classList.add('visible'));
+      console.log("drag mode");
+    });
+
+    card.addEventListener('dragend', () => {
+      const draggingElement = document.querySelector('.dragging');
+      if (draggingElement) {
+        draggingElement.classList.remove('dragging');
+      }
+      markers.forEach(marker => marker.classList.remove('visible'));
+    });
+    
+    // Aggiungiamo l'evento `dragover` ai marker
+    markers.forEach(marker => {
+      marker.addEventListener('dragover', (event) => {
+        // Impediamo il comportamento di default per permettere il drop
+        event.preventDefault();
+      });
+
+      marker.addEventListener('drop', (event) => {
+        // Prevenire il comportamento di default di un drop
+        event.preventDefault();
+        
+        // Otteniamo l'elemento che è stato draggato
+        const draggingElement = document.querySelector('.dragging');
+        
+        // Verifica se c'è un elemento da spostare
+        if (draggingElement) {
+          // Aggiungi la carta appena dopo il marker
+          marker.parentNode.insertBefore(draggingElement, marker.nextSibling);
+          handleMarkers();
+          console.log("Spostamento marker");
+        }
+      });
+    });
+  });
+}
+
+
+
+/**
  * All'avvio della pagina, leggi il numero di giocatori e distribuisci automaticamente le carte
  */
 window.onload = function() {
   dealCards(parseInt(numPlayers));
   dealHands();
-  showplayer(playerturn)
+  dragHandler();
+  showplayer(playerturn);
 };

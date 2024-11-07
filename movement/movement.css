@@ -1,0 +1,33 @@
+.card {
+  /* cursor: move;  Mostra che le carte sono trascinabili */
+  user-select:none; /* Blocca la selezione del testo */
+}
+
+/* Non interferire con la visibilità delle carte non selezionate */
+.cards.hidden {
+  visibility: hidden; /* Carta nascosta ma ancora nell'albero DOM */
+}
+
+/* Aggiungere uno stile per il ghost dell'immagine nella posizione originale quando trasciniamo la carta */
+.card.dragging {
+  opacity: 0.5;
+  cursor: grabbing;
+}
+
+.marker {
+  position:relative;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background-color: transparent; /* inizialmente invisibile */
+  transition: background-color 0.2s ease;
+  color: rgb(255, 163, 117); /* Marker visibile quando la carta è sopra */
+  padding: 1px rgb(255, 205, 112);
+  display: none;
+  transform: scale(1, 2);
+  margin-right: 1px;
+}
+
+.marker.visible {
+  display: inline-block; /* Diventa visibile quando ha la classe 'visible' */
+}
