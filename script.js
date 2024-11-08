@@ -311,16 +311,18 @@ function dragHandler(){
   for (let i = 1; i <= numPlayers; i++) {
     const playercards = document.getElementById(`player${i}-cards`);
     const markers = playercards.querySelectorAll('.marker');
-    enableDraggableCards(cards, markers);
+    enableDraggableCards(cards, markers, i);
   }
 }
 
-function enableDraggableCards(cards, markers) {
+function enableDraggableCards(cards, markers, player) {
   cards.forEach(card => {
     card.setAttribute('draggable', 'true');
     
     card.addEventListener('dragstart', (event) => {
       event.target.classList.add('dragging');
+      event.target.nextSibling.classList.add('markerdragging');
+      console.log(event.target);
       markers.forEach(marker => marker.classList.add('visible'));
       console.log("drag mode");
     });
@@ -331,6 +333,10 @@ function enableDraggableCards(cards, markers) {
         draggingElement.classList.remove('dragging');
       }
       markers.forEach(marker => marker.classList.remove('visible'));
+      const draggingMarker = document.querySelector('.markerdragging');
+      if (draggingMarker) {
+        draggingMarker.classList.remove('markerdragging');
+      }
     });
     
     // Aggiungiamo l'evento `dragover` ai marker
@@ -346,13 +352,13 @@ function enableDraggableCards(cards, markers) {
         
         // Otteniamo l'elemento che è stato draggato
         const draggingElement = document.querySelector('.dragging');
+        const draggingMarker = document.querySelector('.markerdragging');
         
         // Verifica se c'è un elemento da spostare
         if (draggingElement) {
-          // Aggiungi la carta appena dopo il marker
           marker.parentNode.insertBefore(draggingElement, marker.nextSibling);
-          handleMarkers();
-          console.log("Spostamento marker");
+          marker.parentNode.insertBefore(draggingMarker, draggingElement.nextSibling);
+          console.log("Spostata carta");
         }
       });
     });
