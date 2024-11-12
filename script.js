@@ -17,6 +17,8 @@ let selectedCard = []; // Variabile per tenere traccia delle carte selezionate
 
 let playerturn = 1;
 
+let ncardGroup = 0;
+
 /**
  * Funzione che passa il turno al prossimo giocatore
  */
@@ -231,7 +233,7 @@ function deckDeal() {
  */
 function placeCard(selectedCards) {
   const cardSlot = document.getElementById('cardSlot');
-  cardSlot.textContent = ''; // Pulisci il contenuto esistente
+  if (ncardGroup == 0){ cardSlot.textContent = ''; }
 
   // Controlla se ci sono carte selezionate
   if (selectedCards.length === 0) {
@@ -240,13 +242,18 @@ function placeCard(selectedCards) {
   }
 
   // Aggiungi ogni carta selezionata all'area di gioco
+  ncardGroup += 1;
+  const cardGroup = document.createElement('div');
+  cardGroup.id = `${ncardGroup}`;
+  cardGroup.classList.add(`card-group`); // Aggiunge classe per la carta piazzata
+  cardSlot.appendChild(cardGroup);
   selectedCards.forEach(cardDiv => {
     const placedCardDiv = document.createElement('div');
     placedCardDiv.classList.add('placed-card'); // Aggiunge classe per la carta piazzata
     placedCardDiv.textContent = cardDiv.textContent; // Mostra la carta piazzata
 
     // Aggiungi la carta piazzata all'area di gioco
-    cardSlot.appendChild(placedCardDiv);
+    cardGroup.appendChild(placedCardDiv);
 
     // Rimuovi la carta dall'area del giocatore
     cardDiv.remove();

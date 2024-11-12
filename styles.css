@@ -201,30 +201,45 @@ button:hover {
   flex-wrap: wrap; /* Permette il wrapping delle carte se non ci sta in una riga */
 }
 
-/* Stile per l'area di piazzamento delle carte */
+
 .card-slot {
+  margin-top: 10px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  container-type: inline-size; /* Questa proprietà abilita le container queries */
+  font-family: "Segoe UI Symbol", "Noto Sans", sans-serif;
   width: 100%; /* Manteniamo la larghezza dell'area di piazzamento */
-  height: 150px;
+}
+
+/* Stile per l'area di piazzamento delle carte */
+.card-group{
+  height: 120px;
   border: 2px dashed #888;
   border-radius: 10px;
   line-height: 150px; /* Allinea verticalmente il testo */
+  margin-right: 5px;
+  margin-left: 5px;
   color: #888;
   font-weight: bold;
-  display: flex; /* Cambiato per visualizzare le carte piazzate */
+  display: inline-flex; /* Cambiato per visualizzare le carte piazzate */
   flex-wrap: wrap; /* Permette il wrapping delle carte se non ci sta in una riga */
   justify-content: flex-start; /* Allinea le carte a sinistra */
   align-items: center; /* Centra verticalmente il contenuto */
 }
 
-/* Aggiunta per le carte piazzate */
+
 .placed-card {
-  display: inline-block; /* Mantiene le carte in linea */
+  display: inline-flex;
   padding: 10px;
   margin: 5px;
+  width: 30px;
+  height: 45px;
   border-radius: 5px;
   background-color: #e7e7e7;
   border: 1px solid #ccc;
   font-size: 18px;
-  min-width: 30px; /* Imposta una larghezza minima per le carte */
-  text-align: center; /* Allinea il testo al centro */
+  align-items: center;
+  justify-content: center;
+  cursor: pointer; /* Cambiato il cursore per indicare che la carta è cliccabile */
+  transition: all 0.5s ease; /* Aggiunge una transizione fluida */
 }
