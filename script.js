@@ -228,6 +228,13 @@ function deckDeal() {
   }
 }
 
+function newMarker() {
+  const marker = document.createElement('span');
+  marker.classList.add('marker');
+  marker.textContent = '|';
+  return marker;
+}
+
 /**
  * Funzione per piazzare la carta
  */
@@ -247,20 +254,28 @@ function placeCard(selectedCards) {
   cardGroup.id = `${ncardGroup}`;
   cardGroup.classList.add(`card-group`); // Aggiunge classe per la carta piazzata
   cardSlot.appendChild(cardGroup);
-  selectedCards.forEach(cardDiv => {
+  selectedCards.forEach((cardDiv,index) => {
+    if (index == 0) {
+      cardGroup.appendChild(newMarker());
+    }
     const placedCardDiv = document.createElement('div');
     placedCardDiv.classList.add('placed-card'); // Aggiunge classe per la carta piazzata
     placedCardDiv.textContent = cardDiv.textContent; // Mostra la carta piazzata
 
     // Aggiungi la carta piazzata all'area di gioco
     cardGroup.appendChild(placedCardDiv);
+    cardGroup.appendChild(newMarker());
 
     // Rimuovi la carta dall'area del giocatore
     cardDiv.remove();
+    // const value = cardDiv.setAttribute('data-full-value', item);
+    playerCards[`cards${playerturn}`] = playerCards[`cards${playerturn}`].filter(element => element !== cardDiv.textContent);
   });
 
   // Reset dell'array delle carte selezionate, se necessario
   selectedCard = []; // Resetta l'array delle carte selezionate
+  console.log("Carte piazzate");
+  dragHandler()
 }
 
 /**
@@ -272,15 +287,38 @@ function crtMarker(player) {
     const cards = Array.from(cardsContainer.querySelectorAll('.card'));
     cards.forEach((card, index) => {
       if (index < cards.length - 1) {
-        const marker = document.createElement('span');
-        marker.classList.add('marker');
-        marker.textContent = '|';
+        const marker = newMarker();
         card.parentNode.insertBefore(marker, card.nextSibling);
       }
     });
   }
 }
 
+function updPlayMarker() {
+  const cardSlot = document.getElementById('cardSlot');
+  const cardGroups = Array.from(cardSlot.getElementsByClassName('card-group'));
+  cardGroups.forEach(cardGroup => {
+    if (cardGroup) {
+      if (markers){
+        const markers = cardGroup.querySelectorAll('.marker');
+        // Rimuoviamo ogni marker trovato
+        markers.forEach(marker => {
+          marker.remove();
+        });
+      }
+
+      const cards = Array.from(cardGroup.querySelectorAll('.placed-card'));
+      console.log(cards);
+      cards.forEach((card, index) => {
+        console.log(card, index);
+        if (index < cards.length - 1) {
+          const marker = newMarker();
+          card.parentNode.insertBefore(marker, card.nextSibling);
+        }
+      });
+    }
+  });
+}
 
 /**
  * Funzione che rimuove i marker da un cards.
@@ -298,6 +336,7 @@ function rmMarker(player) {
     });
   };
 }
+
 /**
  * Crea i marker per tutti i giocatori.
  */
@@ -315,10 +354,15 @@ function dragHandler(){
   const cards = document.querySelectorAll('.card');
   //const markers = document.querySelectorAll('.marker');
   handleMarkers();
+  const markers = document.getElementById('cardSlot').querySelectorAll('.marker');
+  console.log (markers);
   for (let i = 1; i <= numPlayers; i++) {
     const playercards = document.getElementById(`player${i}-cards`);
-    const markers = playercards.querySelectorAll('.marker');
-    enableDraggableCards(cards, markers, i);
+    const allmarkers = [
+      ...playercards.querySelectorAll('.marker'),       // Seleziona marker dentro playercards
+      ...markers  // Seleziona marker dentro cardSlot
+    ];
+    enableDraggableCards(cards, allmarkers, i);
   }
 }
 
@@ -328,8 +372,9 @@ function enableDraggableCards(cards, markers, player) {
     
     card.addEventListener('dragstart', (event) => {
       event.target.classList.add('dragging');
-      event.target.nextSibling.classList.add('markerdragging');
-      console.log(event.target);
+      if(event.target.nextSibling){
+        event.target.nextSibling.classList.add('markerdragging');
+      }
       markers.forEach(marker => marker.classList.add('visible'));
       console.log("drag mode");
     });
