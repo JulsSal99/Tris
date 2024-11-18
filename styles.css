@@ -76,7 +76,25 @@ button:hover {
   align-items: center;
   justify-content: center;
   cursor: pointer; /* Cambiato il cursore per indicare che la carta è cliccabile */
-  transition: all 0.5s ease; /* Aggiunge una transizione fluida */
+  transition: all .5s ease; /* Aggiunge una transizione fluida */
+  filter: brightness(1.05);
+}
+
+.cards {
+  transform-style: preserve-3d;
+  transform: perspective(10px);
+}
+
+.cards .card:hover{
+  transform: translateZ(1.3px);
+  border: 1px solid rgb(184, 184, 255);
+}
+.cards .card:has(+ * + *:hover){
+  transform: translateZ(0.3px) rotateY(-0.5deg);
+}
+
+.cards .card:hover + * + *{
+  transform: translateZ(0.3px) rotateY(0.5deg);
 }
 
 .cards.hidden .card {
