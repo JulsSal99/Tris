@@ -35,14 +35,30 @@ let placedCards = {};
 
 let playerturn = 1;
 
+/* LOGIC */
+/**
+ * sposta una carta dal deck alla mano
+ * @param {int} player
+ * @param {int} n 
+ * @returns 
+ */
+function LGdealDeckToHand(player, n) {
+  playerCards[player] = shuffledDeck.splice(0, n); // Distribuisci n carte a un giocatore
+}
+/**
+ * Funzione passa il turno al prossimo giocatore
+ */
+function LGskipTurn(){
+  if (playerturn < numPlayers){   playerturn += 1;
+  } else {                        playerturn = 1; 
+}}
+
+
 /**
  * Funzione che passa il turno al prossimo giocatore
  */
 function skipTurn() {
-  // Qui, per esempio, passeremo al giocatore 1
-  if (playerturn < numPlayers){
-    playerturn += 1;
-  } else { playerturn = 1; }
+  LGskipTurn();
   showplayer(playerturn);
   dragHandler();
 }
@@ -79,7 +95,7 @@ function showplayer(player) {
  * Controlla se è un array con almeno 2 elementi
  * Controlla se ci sono valori duplicati di semi differenti
  * Controlla se ci sono valori consecutivi di semi uguali
- * @param {*} CardsValue 
+ * @param {string[]} CardsValue 
  * @returns 
  */
 function isValidSelection(CardsValue) {
@@ -119,6 +135,8 @@ function isValidSelection(CardsValue) {
 
 /**
  * Funzione per mischiare il mazzo
+ * @param {string[]} deck 
+ * @returns 
  */
 function shuffleDeck(deck) {
   for (let i = deck.length - 1; i > 0; i--) {
@@ -130,26 +148,22 @@ function shuffleDeck(deck) {
 
 /**
  *  Funzione per distribuire le carte solo all'inizio della partita
+ * @param {int} n - numero di carte distribuite ad ogni giocatore
+ * @returns 
  */
-function dealCards(numPlayers) {
+function dealCards(n) {
   shuffledDeck = shuffleDeck(deck.concat(deck));
-
   const playersContainer = document.getElementById('playersContainer');
   playersContainer.innerHTML = ''; // Pulisce eventuali giocatori precedenti
-
-  // Crea le sezioni dei giocatori
-  for (let i = 1; i <= numPlayers; i++) {
+  for (let i = 1; i <= numPlayers; i++) { // Crea le sezioni dei giocatori
     const playerDiv = document.createElement('div');
     playerDiv.classList.add('player');
     playerDiv.innerHTML = `<h2>Giocatore ${i}</h2><div class="cards" id="player${i}-cards"></div>`;
     playersContainer.appendChild(playerDiv);
-    
-    // Distribuisci 5 carte a un giocatore
-    playerCards[i] = shuffledDeck.splice(0, 5); 
+    LGdealDeckToHand(i, n); // Distribuisci 5 carte a un giocatore
   }
-
-  // Mostra il mazzo coperto con le carte rimanenti
-  displayDeck(shuffledDeck);
+  displayDeck(shuffledDeck); // Mostra il mazzo coperto
+  console.log("Distribuite carte iniziali");
 }
 
 /**
@@ -162,16 +176,7 @@ function dealHands() {
     playerDiv.classList.add('hidden') // Nasconde l'elemento
     playerDiv.innerHTML = ''; // Pulisce l'area delle carte
     playerCards[i].forEach(card => {
-      const cardDiv = document.createElement('div');
-      cardDiv.classList.add('card');
-      cardDiv.textContent = card;
-
-      // Aggiunge l'evento di click per selezionare la carta
-      cardDiv.onclick = function() {
-        selectCard(cardDiv);
-      };
-
-      playerDiv.appendChild(cardDiv);
+      crtCard(card, playerDiv, 'div', 'card');
     });
     console.log(`Creato giocatore ${i}`);
   }
@@ -187,6 +192,7 @@ function selectCard(cardDiv) {
     // Se la carta è già selezionata, rimuovila
     selectedCard = selectedCard.filter(card => card !== cardDiv);
     cardDiv.classList.remove('selected'); // Rimuovi la classe di selezione
+    console.log("deselezionata");
   } else {
      // Aggiungi la nuova carta a un array temporaneo
      let CardsValue = [];
@@ -195,11 +201,13 @@ function selectCard(cardDiv) {
      if (!isValidSelection(CardsValue)) {
        selectedCard.forEach(card => {
          card.classList.remove('selected'); // Rimuove la selezione da ogni carta
+         console.log("deselezionate le carte");
        });
        selectedCard = [];
      }
      selectedCard.push(cardDiv);
      cardDiv.classList.add('selected'); // Aggiunge classe per evidenziare la selezione
+     console.log("selezionata");
   }
 }
 
@@ -276,6 +284,26 @@ function placeAllValueCard(groupNumber) {
   console.log(`Le carte sono state spostate nel gruppo ${groupNumber}.`);
 }
 
+/**
+ * Crea un nuovo elemento c col relativo marker e lo aggiunge a cardgroup
+ * @param {string} prevDiv - origin group
+ * @param {*} cardGroup - end group
+ * @param {string} ELtype - new element type
+ * @param {string} ELattr - new element attribute
+ */
+function crtCard(text, cardGroup, ELtype, ELattr){
+    let newGroup = document.createElement(ELtype);
+    newGroup.classList.add(ELattr); // Aggiunge classe per la carta piazzata
+    newGroup.textContent = text; // Mostra la carta piazzata
+    // Aggiunge l'evento di click per selezionare la carta
+    newGroup.onclick = function() {
+      selectCard(newGroup);
+    }
+    // Aggiungi la carta piazzata all'area di gioco
+    cardGroup.appendChild(newGroup);
+    cardGroup.appendChild(newMarker());
+}
+
 
 /**
  * Funzione per piazzare la carta
@@ -296,20 +324,10 @@ function placeCard(selectedCards) {
   cardGroup.classList.add(`card-group`);
   cardSlot.appendChild(cardGroup);
   selectedCards.forEach((cardDiv,index) => {
-    //if (index == 0) {
-    //  cardGroup.appendChild(newMarker());
-    //}
-    const placedCardDiv = document.createElement('div');
-    placedCardDiv.classList.add('placed-card'); // Aggiunge classe per la carta piazzata
-    placedCardDiv.textContent = cardDiv.textContent; // Mostra la carta piazzata
-
-    // Aggiungi la carta piazzata all'area di gioco
-    cardGroup.appendChild(placedCardDiv);
-    cardGroup.appendChild(newMarker());
-
+    crtCard(cardDiv.textContent, cardGroup, 'div', 'placed-card');
     // Rimuovi la carta dall'area del giocatore
     cardDiv.remove();
-    // const value = cardDiv.setAttribute('data-full-value', item);
+    // const value = cardDiv.setAttribute('data-full-value', item);    
   });
 
   // Reset dell'array delle carte selezionate, se necessario
@@ -557,7 +575,7 @@ function enableDraggableCards(cards, markers, player) {
  * All'avvio della pagina, leggi il numero di giocatori e distribuisci automaticamente le carte
  */
 window.onload = function() {
-  dealCards(parseInt(numPlayers));
+  dealCards(5);
   dealHands();
   dragHandler();
   showplayer(playerturn);
