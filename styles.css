@@ -37,7 +37,7 @@ button:hover {
 
 .player {
   border: 2px solid #333;
-  padding: 20px;
+  padding: 15px;
   background-color: white;
   width: 25%;
   transition: all 0.5s ease; /* Aggiunge una transizione fluida */
@@ -61,6 +61,7 @@ button:hover {
   border: 1px solid #ccc;
   container-type: inline-size; /* Questa proprietà abilita le container queries */
   font-family: "Segoe UI Symbol", "Noto Sans", sans-serif;
+  border-radius: 10px;
 }
 
 .card {
@@ -68,7 +69,7 @@ button:hover {
   padding: 10px;
   margin: 5px;
   width: 30px;
-  height: 45px;
+  aspect-ratio: 3 / 4.5; /* Mantiene il rapporto altezza/larghezza */
   border-radius: 5px;
   background-color: #e7e7e7;
   border: 1px solid #ccc;
@@ -106,7 +107,6 @@ button:hover {
 @container (max-width: 140px) {
   .card {
     width: 20px;  /* Riduci la larghezza delle carte */
-    height: 30px; /* Riduci l'altezza delle carte */
     font-size: 15px; /* Riduci la dimensione del font */
     padding: 3px;
     margin: 1px;
@@ -115,7 +115,6 @@ button:hover {
 @container (min-width: 140px) and (max-width: 160px) {
   .card {
     width: 25px;  /* Riduci la larghezza delle carte */
-    height: 40px; /* Riduci l'altezza delle carte */
     font-size: 17px; /* Riduci la dimensione del font */
     padding: 5px;
     margin: 3px;
@@ -124,7 +123,6 @@ button:hover {
 @container (min-width: 160px) and (max-width: 180px) {
   .card {
     width: 27px;  /* Riduci la larghezza delle carte */
-    height: 42px; /* Riduci l'altezza delle carte */
     font-size: 17px; /* Riduci la dimensione del font */
     padding: 7px;
     margin: 4px;
@@ -186,6 +184,11 @@ button:hover {
   background-color: #0056b3;
 }
 
+.selected {
+  border: 2px solid blue; /* Cambia il colore del bordo per la selezione */
+  background-color: #d1e7fd; /* Colore di sfondo per la selezione */
+}
+
 /* Stile per l'area di gioco */
 .play-area {
   margin-top: 30px;
@@ -196,17 +199,12 @@ button:hover {
 
 .card-slot {
   width: 100%;
-  height: 150px;
+  min-height: 150px;
   border: 2px dashed #888;
   border-radius: 10px;
   line-height: 150px; /* Allinea verticalmente il testo */
   color: #888;
   font-weight: bold;
-}
-
-.selected {
-  border: 2px solid blue; /* Cambia il colore del bordo per la selezione */
-  background-color: #d1e7fd; /* Colore di sfondo per la selezione */
 }
 
 /* Esistente */
@@ -243,6 +241,14 @@ button:hover {
   flex-wrap: wrap; /* Permette il wrapping delle carte se non ci sta in una riga */
   justify-content: flex-start; /* Allinea le carte a sinistra */
   align-items: center; /* Centra verticalmente il contenuto */
+
+  margin-top: 10px;
+  margin-bottom: 10px;
+  padding: 10px;
+  border: 2px dashed #888;
+  container-type: inline-size; /* Questa proprietà abilita le container queries */
+  font-family: "Segoe UI Symbol", "Noto Sans", sans-serif;
+  border-radius: 10px;
 }
 
 
@@ -251,7 +257,7 @@ button:hover {
   padding: 10px;
   margin: 5px;
   width: 30px;
-  height: 45px;
+  aspect-ratio: 3 / 4.5; /* Mantiene il rapporto altezza/larghezza */
   border-radius: 5px;
   background-color: #e7e7e7;
   border: 1px solid #ccc;
@@ -259,5 +265,17 @@ button:hover {
   align-items: center;
   justify-content: center;
   cursor: pointer; /* Cambiato il cursore per indicare che la carta è cliccabile */
+  transition: all .5s ease; /* Aggiunge una transizione fluida */
+  filter: brightness(1.05);
   transition: all 0.5s ease; /* Aggiunge una transizione fluida */
+}
+
+.card-group {
+  transform-style: preserve-3d;
+  transform: perspective(10px);
+}
+
+.card-group .placed-card:hover{
+  transform: translateZ(1.3px);
+  border: 1px solid rgb(184, 184, 255);
 }

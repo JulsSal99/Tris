@@ -18,7 +18,7 @@ let shuffledDeck = [];
 
 /**
  * per memorizzare le carte dei giocatori.
- * Catalogato per ID giocatore 
+ * Catalogato per ID giocatore
  */
 let playerCards = {};
 
@@ -26,6 +26,8 @@ let playerCards = {};
  * Variabile per tenere traccia degli elementi di carte selezionate
  */
 let selectedCard = [];
+
+let selectedPlacedCard = [];
 
 /**
  * carte messe sul tavolo 
@@ -80,6 +82,7 @@ function deselectAllCards() {
 function showplayer(player) {
   deselectAllCards();
   selectedCard = []; 
+  selectedPlacedCard = [];
   console.log("Turno di " + player + ".")  
   for (let i = 1; i <= numPlayers; i++) {
     const playerDiv = document.getElementById(`player${i}-cards`);
@@ -100,10 +103,10 @@ function showplayer(player) {
  */
 function isValidSelection(CardsValue) {
   if (!Array.isArray(CardsValue)) {
-    console.error('selectedCards deve essere un array.');
+    console.error('input must be an array.');
     return false;
   } else if (CardsValue.length <= 1){
-    console.log('selectedCards ha meno di 2 elementi.');
+    console.log('input has less than 2 elements.');
     return true;
   } else {
     const values = CardsValue.map(card => card.slice(0, -1));
@@ -188,6 +191,7 @@ function dealHands() {
 function selectCard(cardDiv) {
   // Controlla se la carta è già selezionata
   const isAlreadySelected = selectedCard.includes(cardDiv);
+
   if (isAlreadySelected) {
     // Se la carta è già selezionata, rimuovila
     selectedCard = selectedCard.filter(card => card !== cardDiv);
@@ -236,6 +240,18 @@ document.getElementById('cardSlot').onclick = function() {
     selectedCard = []; // Resetta la selezione dopo il piazzamento
   }
 };
+
+
+/**
+ * Verifica se entrambi sono in un'area
+ */ 
+function areBothInPlayArea(element1, element2, area) {
+  const playArea = document.querySelector(area);
+  const isElement1InPlayArea = playArea.contains(element1);
+  const isElement2InPlayArea = playArea.contains(element2);
+  const bothInPlayArea = isElement1InPlayArea && isElement2InPlayArea;
+  return bothInPlayArea;
+}
 
 /**
  * Gestisce quando viene cliccato il mazzo coperto.
@@ -292,15 +308,16 @@ function placeAllValueCard(groupNumber) {
  * @param {string} ELattr - new element attribute
  */
 function crtCard(text, cardGroup, ELtype, ELattr){
-    let newGroup = document.createElement(ELtype);
-    newGroup.classList.add(ELattr); // Aggiunge classe per la carta piazzata
-    newGroup.textContent = text; // Mostra la carta piazzata
+    let newElement = document.createElement(ELtype);
+    newElement.classList.add(ELattr); // Aggiunge classe per la carta piazzata
+    newElement.textContent = text; // Mostra la carta piazzata
     // Aggiunge l'evento di click per selezionare la carta
-    newGroup.onclick = function() {
-      selectCard(newGroup);
+    newElement.onclick = function() {
+      selectCard(newElement);
+      event.stopPropagation(); // Interrompe la propagazione dell'evento al cardSlot
     }
     // Aggiungi la carta piazzata all'area di gioco
-    cardGroup.appendChild(newGroup);
+    cardGroup.appendChild(newElement);
     cardGroup.appendChild(newMarker());
 }
 
