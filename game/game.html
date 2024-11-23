@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gioco del Tris</title>
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="movement/movement.css">
+  <link rel="stylesheet" href="exitbutton.css">
+  <link rel="icon" href="../images/favicon.ico" type="image/x-icon">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Gioco del Tris">
+  <meta property="og:description" content="Gioca al Tris con le carte di scala quaranta, scegli il numero di giocatori e divertiti con i tuoi amici!">
+  <meta property="og:image" content="https://julssal99.github.io/Tris/images/social.jpg?v=1">
+  <meta property="og:url" content="https://julssal99.github.io/Tris/">
+  <meta property="og:type" content="website">
+</head>
+<body>
+  <h1>Gioco del Tris</h1>
+  <div class="players" id="playersContainer"></div>
+  
+  <!-- Aggiungiamo la sezione del mazzo coperto -->
+  <div class="deck-container">
+    <div class="deck" id="deck" onclick="deckDeal()">
+      <div class="deck-cards" id="deck-cards">
+        <h3 id="deck-count"></h3>
+      </div>
+    </div>
+     <!-- <div class="skipturn" id="skipturn" onclick="skipTurn()">
+      <h2>Passa il turno</h2>
+    </div>-->
+  </div>
+
+    <!-- Area di piazzamento delle carte -->
+    <div class="play-area">
+      <div id="cardSlot" class="card-slot">
+        Clicca qui per piazzare le carte
+      </div>
+    </div>
+
+    <div class="exit-button">
+      <a href="../index.html" title="Esci dal gioco">&times;</a>
+    </div>  
+    
+  
+    <script src="script.js"></script>
+    <script src="movement/movement.js"></script>
+</body>
+</html>

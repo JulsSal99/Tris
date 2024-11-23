@@ -1,0 +1,29 @@
+.exit-button {
+  position: fixed; /* Posiziona il bottone sopra tutti gli elementi */
+  top: 10px; /* Spaziatura dall'alto */
+  right: 10px; /* Spaziatura dal bordo destro */
+  z-index: 1000; /* Assicura che stia sopra altri elementi */
+}
+
+.exit-button a {
+  display: inline-block;
+  font-size: 24px; /* Dimensione del simbolo X */
+  font-weight: bold;
+  color: #fff; /* Colore del testo */
+  background-color: #ff4d4d; /* Sfondo rosso */
+  text-decoration: none; /* Rimuove la sottolineatura */
+  border: 2px solid #cc0000; /* Bordo più scuro per contrasto */
+  border-radius: 50%; /* Forma circolare */
+  width: 40px; /* Larghezza del bottone */
+  height: 40px; /* Altezza del bottone */
+  text-align: center; /* Centra il testo */
+  line-height: 36px; /* Allinea verticalmente il testo */
+  cursor: pointer; /* Indica che è cliccabile */
+  transition: all 0.3s ease; /* Aggiunge una transizione fluida per gli hover */
+}
+
+.exit-button a:hover {
+  background-color: #cc0000; /* Colore più scuro al passaggio del mouse */
+  color: #fff; /* Mantiene il colore bianco del testo */
+  transform: scale(1.1); /* Leggero ingrandimento */
+}
