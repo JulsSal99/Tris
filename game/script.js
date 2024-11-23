@@ -351,7 +351,27 @@ function placeCard(selectedCards) {
 
   // Reset dell'array delle carte selezionate, se necessario
   placeAllValueCard(ncardGroup+1);
-  dragHandler()
+  dragHandler();
+  removeEmptyGroups('#cardSlot .card-group', '.placed-card');
+}
+
+/**
+ * controlla se ci sono dei gruppi vuoti all'interno del e li elimini
+ * @param {string} group 
+ * @param {string} element 
+ */
+function removeEmptyGroups(group, element) {
+  // Seleziona tutti i div con classe "card-group" dentro l'elemento con id "cardSlot"
+  const cardGroups = document.querySelectorAll(group);
+
+  // Itera su ciascun gruppo
+  cardGroups.forEach(group => {
+    // Verifica se il gruppo non contiene nessuna carta (nessun elemento con classe "placed-card")
+    if (group.querySelectorAll(element).length === 0) {
+      // Se è vuoto, rimuovi il gruppo
+      group.remove();
+    }
+  });
 }
 
 /**
@@ -482,12 +502,22 @@ function dragHandler(){
       ...playercards.querySelectorAll('.marker'),       // Seleziona marker dentro playercards
       ...markers  // Seleziona marker dentro cardSlot
     ];
-    enableDraggableCards(cards, allmarkers, i);
+    enableDraggableCards(cards, allmarkers);
+    if (i == playerturn){
+      const placedcards = document.getElementById('cardSlot').querySelectorAll('.placed-card');
+      enableDraggableCards(placedcards, allmarkers);
+      console.log(allmarkers);
+    }
   }
 }
 
-
-function enableDraggableCards(cards, markers, player) {
+/**
+ * Aggiunge eventi Drag e Touch
+ * @param {*} cards 
+ * @param {*} markers 
+ * @param {*} player 
+ */
+function enableDraggableCards(cards, markers) {
   cards.forEach(card => {
     card.setAttribute('draggable', 'true');
     
