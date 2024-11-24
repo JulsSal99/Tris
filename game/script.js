@@ -101,13 +101,14 @@ function showplayer(player) {
  * Controlla se ci sono valori duplicati di semi differenti
  * Controlla se ci sono valori consecutivi di semi uguali
  * @param {string[]} CardsValue 
+ * @param {string} [minCycles=2] - Numero minimo di valori in CardsValue
  * @returns 
  */
-function isValidSelection(CardsValue) {
+function isValidSelection(CardsValue, minCycles = 2) {
   if (!Array.isArray(CardsValue)) {
     console.error('input must be an array.');
     return false;
-  } else if (CardsValue.length <= 1){
+  } else if (CardsValue.length <= minCycles){
     console.log('input has less than 2 elements.');
     return true;
   } else {
@@ -242,7 +243,12 @@ document.getElementById('cardSlot').onclick = function() {
     selectedCard = []; // Resetta la selezione dopo il piazzamento
   }
 };
-
+document.querySelectorAll('#playersContainer [id^="player"][id$="-cards"]').onclick = function() {
+  if (selectedCard.length > 0) {
+    placeCard(selectedCard);
+    selectedCard = []; // Resetta la selezione dopo il piazzamento
+  }
+};
 
 /**
  * Verifica se entrambi sono in un'area
@@ -382,23 +388,54 @@ function updPlayMarker() {
   const cardGroups = Array.from(cardSlot.getElementsByClassName('card-group'));
   cardGroups.forEach(cardGroup => {
     if (cardGroup) {
+      const cards = Array.from(cardGroup.querySelectorAll('.placed-card'));
       if (markers){
         const markers = cardGroup.querySelectorAll('.marker');
         // Rimuoviamo ogni marker trovato
         markers.forEach(marker => {
           marker.remove();
         });
+      } else if (!(cards.length)) {
+        cardGroup.remove();
+      } else {
+        updMarkers (cards);
       }
+    }
+  });
+}
 
-      const cards = Array.from(cardGroup.querySelectorAll('.placed-card'));
-      console.log(cards);
-      cards.forEach((card, index) => {
-        console.log(card, index);
-        if (index < cards.length - 1) {
-          const marker = newMarker();
-          card.parentNode.insertBefore(marker, card.nextSibling);
+
+function updMarkers (cards) {
+  const marker = newMarker();
+  cards.forEach((card, index) => {
+    if (index == 0) {
+      let previousElement = card.previousElementSibling;
+      while (previousElement){
+        if (previousElement.classList.contains('marker')){
+          previousElement.remove();
         }
-      });
+        previousElement = card.previousElementSibling;
+      }
+    }
+    const nextSibling = card.nextSibling;
+    if (index === cards.length - 1 && !nextSibling){
+      card.parentNode.appendChild(marker); //aggiunge un marker all'ultimo elemento
+    } else {
+      const isNextMarker = nextSibling.classList.contains('marker');
+      if (index === cards.length - 1 && !(isNextMarker)){
+        if (nextSibling && isNextMarker){
+          card.parentNode.appendChild(marker); //aggiunge un marker all'ultimo elemento
+        }
+      } else if (nextSibling && !(isNextMarker)) {
+        card.parentNode.insertBefore(marker, nextSibling);
+      } else if (nextSibling && isNextMarker) {
+        let nextSibling2 = nextSibling.nextSibling;
+        while (nextSibling2 && nextSibling2.classList.contains('marker')) {
+          const toRemove = nextSibling2;
+          nextSibling2 = nextSibling2.nextSibling; // Passa al prossimo nodo prima di rimuovere
+          toRemove.remove();
+        }
+      }
     }
   });
 }
